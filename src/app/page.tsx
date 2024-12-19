@@ -1,101 +1,207 @@
+import contentful from "@/app/contentful/contentful";
+import {
+  IContentfulAsset,
+  TypeCompanyProfileSkeleton,
+  TypeTestimonialSkeleton,
+  TypeProjectSkeleton,
+  TypeTeamMemberSkeleton,
+} from "@/app/contentful/types/comPro.types";
 import Image from "next/image";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+const getCompanyProfileContentful = async () => {
+  try {
+    const data = await contentful.getEntries<TypeCompanyProfileSkeleton>({
+      content_type: "companyProfile",
+    });
+    return data;
+  } catch (err) {
+    console.error("Error fetching company profile:", err);
+    return null;
+  }
+};
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+const getTestimonials = async () => {
+  try {
+    const data = await contentful.getEntries<TypeTestimonialSkeleton>({
+      content_type: "companyProfile",
+    });
+    return data;
+  } catch (err) {
+    console.error("Error fetching testimonials:", err);
+    return null;
+  }
+};
+
+const getProjects = async () => {
+  try {
+    const data = await contentful.getEntries<TypeProjectSkeleton>({
+      content_type: "companyProfile",
+    });
+    return data;
+  } catch (err) {
+    console.error("Error fetching projects:", err);
+    return null;
+  }
+};
+
+const getTeamMembers = async () => {
+  try {
+    const data = await contentful.getEntries<TypeTeamMemberSkeleton>({
+      content_type: "companyProfile",
+    });
+    return data;
+  } catch (err) {
+    console.error("Error fetching team members:", err);
+    return null;
+  }
+};
+
+export default async function CompanyProfile() {
+  const profile = await getCompanyProfileContentful();
+  const testimonials = await getTestimonials();
+  const projects = await getProjects();
+  const teamMembers = await getTeamMembers();
+
+  const company = profile?.items?.[0]?.fields;
+
+  if (!company) {
+    return (
+      <div className="page-wrapper">
+        <div className="container">
+          <h1 className="page-title">Error loading company profile</h1>
+          <p>Sorry, we could not load the company profile.</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page-wrapper">
+      <div className="container">
+        <h1 className="page-title">About Us</h1>
+        <h4 className="page-subtitle">Tertarik bekerja sama dengan kami?</h4>
+
+        {/* Company Information */}
+        <div className="company-card">
+          <div className="company-logo">
+            {company?.logo && (
+              <Image
+                src={`https:${
+                  (company.logo as IContentfulAsset)?.fields.file.url
+                }`}
+                alt={company.name || "Company Logo"}
+                width={150}
+                height={150}
+                layout="intrinsic"
+              />
+            )}
+          </div>
+
+          <div className="company-info">
+            <h2>{company?.name || "Company Name"}</h2>
+            {/* Render Rich Text for Description */}
+            <div>
+              {company?.description &&
+                documentToReactComponents(company.description)}
+            </div>
+            <p>
+              <strong>Contact:</strong>{" "}
+              {company?.contact || "No contact information"}
+            </p>
+            <p>
+              <strong>Address:</strong>{" "}
+              {company?.address || "No address available"}
+            </p>
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        {testimonials?.items && testimonials.items.length > 0 && (
+          <div className="testimonial">
+            <h3>What Our Clients Say</h3>
+            {testimonials.items.map((testimonial, idx) => (
+              <div className="testimonial-item" key={idx}>
+                {testimonial.fields.clientPhoto && (
+                  <Image
+                    src={`https:${
+                      (testimonial.fields.clientPhoto as IContentfulAsset)
+                        ?.fields.file.url
+                    }`}
+                    alt={testimonial.fields.clientName || "Client Photo"}
+                    width={60}
+                    height={60}
+                    layout="intrinsic"
+                  />
+                )}
+                <div>
+                  <p>{testimonial.fields.testimonialText}</p>
+                  <strong>{testimonial.fields.clientName}</strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Team Members */}
+        {teamMembers?.items && teamMembers.items.length > 0 && (
+          <div className="team-section">
+            <h3>Meet Our Team</h3>
+            <div className="team-members">
+              {teamMembers.items.map((member, idx) => (
+                <div className="team-card" key={idx}>
+                  {member?.fields?.photo && (
+                    <Image
+                      src={`https:${
+                        (member.fields.photo as IContentfulAsset)?.fields.file
+                          .url
+                      }`}
+                      alt={member?.fields?.name || "Team Member Photo"}
+                      width={120}
+                      height={120}
+                      layout="intrinsic"
+                    />
+                  )}
+                  <h4>{member?.fields?.name || "Team Member Name"}</h4>
+                  <p>{member?.fields?.position || "Team Member Position"}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Project Gallery */}
+        {projects?.items && projects.items.length > 0 && (
+          <div className="project-gallery">
+            <h3>Our Projects</h3>
+            <div className="projects">
+              {projects.items.map((project, idx) => (
+                <div className="project-card" key={idx}>
+                  {project?.fields?.projectImage && (
+                    <Image
+                      src={`https:${
+                        (project.fields.projectImage as IContentfulAsset)
+                          ?.fields.file.url
+                      }`}
+                      alt={project?.fields?.projectName || "Project Image"}
+                      width={300}
+                      height={200}
+                      layout="intrinsic"
+                    />
+                  )}
+                  <div className="project-info">
+                    <h4>{project?.fields?.projectName || "Project Name"}</h4>
+                    <p>
+                      {project?.fields?.projectDescription ||
+                        "Project Description"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
